@@ -14,20 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.utils;
+package org.apache.sis.internal.geojson.binding;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import org.apache.sis.storage.geojson.binding.*;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONGeometryCollection;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONLineString;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiLineString;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiPoint;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiPolygon;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONPoint;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONPolygon;
-import org.apache.sis.util.Static;
-import org.locationtech.jts.geom.*;
+import java.util.List;
+import org.apache.sis.storage.geojson.utils.GeoJSONTypes;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -38,7 +44,152 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @since   2.0
  * @module
  */
-public final class GeometryUtils extends Static {
+public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
+
+    public GeoJSONGeometry() {
+    }
+
+    /**
+     * POINT
+     */
+    public static class GeoJSONPoint extends GeoJSONGeometry {
+
+        private double[] coordinates = null;
+
+        public GeoJSONPoint() {
+            setType(GeoJSONTypes.POINT);
+        }
+
+        public double[] getCoordinates() {
+            return coordinates;
+        }
+
+        public void setCoordinates(double[] coordinates) {
+            this.coordinates = coordinates;
+        }
+
+    }
+
+    /**
+     * MULTI-POINT
+     */
+    public static class GeoJSONMultiPoint extends GeoJSONGeometry {
+
+        private double[][] coordinates = null;
+
+        public GeoJSONMultiPoint() {
+            setType(GeoJSONTypes.MULTI_POINT);
+        }
+
+        public double[][] getCoordinates() {
+            return coordinates;
+        }
+
+        public void setCoordinates(double[][] coordinates) {
+            this.coordinates = coordinates;
+        }
+    }
+
+    /**
+     * LINESTRING
+     */
+    public static class GeoJSONLineString extends GeoJSONGeometry {
+
+        private double[][] coordinates = null;
+
+        public GeoJSONLineString() {
+            setType(GeoJSONTypes.LINESTRING);
+        }
+
+        public double[][] getCoordinates() {
+            return coordinates;
+        }
+
+        public void setCoordinates(double[][] coordinates) {
+            this.coordinates = coordinates;
+        }
+    }
+
+    /**
+     * MULTI-LINESTRING
+     */
+    public static class GeoJSONMultiLineString extends GeoJSONGeometry {
+
+        private double[][][] coordinates = null;
+
+        public GeoJSONMultiLineString() {
+            setType(GeoJSONTypes.MULTI_LINESTRING);
+        }
+
+        public double[][][] getCoordinates() {
+            return coordinates;
+        }
+
+        public void setCoordinates(double[][][] coordinates) {
+            this.coordinates = coordinates;
+        }
+    }
+
+    /**
+     * POLYGON
+     */
+    public static class GeoJSONPolygon extends GeoJSONGeometry {
+
+        private double[][][] coordinates = null;
+
+        public GeoJSONPolygon() {
+            setType(GeoJSONTypes.POLYGON);
+        }
+
+        public double[][][] getCoordinates() {
+            return coordinates;
+        }
+
+        public void setCoordinates(double[][][] coordinates) {
+            this.coordinates = coordinates;
+        }
+    }
+
+    /**
+     * MULTI-POLYGON
+     */
+    public static  class GeoJSONMultiPolygon extends GeoJSONGeometry {
+
+        private double[][][][] coordinates = null;
+
+        public GeoJSONMultiPolygon() {
+            setType(GeoJSONTypes.MULTI_POLYGON);
+        }
+
+        public double[][][][] getCoordinates() {
+            return coordinates;
+        }
+
+        public void setCoordinates(double[][][][] coordinates) {
+            this.coordinates = coordinates;
+        }
+    }
+
+    /**
+     * GEOMETRY-COLLECTION
+     */
+    public static class GeoJSONGeometryCollection extends GeoJSONGeometry {
+
+        protected List<GeoJSONGeometry> geometries = new ArrayList<GeoJSONGeometry>();
+
+        public GeoJSONGeometryCollection() {
+            setType(GeoJSONTypes.GEOMETRY_COLLECTION);
+        }
+
+        public List<GeoJSONGeometry> getGeometries() {
+            return geometries;
+        }
+
+        public void setGeometries(List<GeoJSONGeometry> geometries) {
+            this.geometries = geometries;
+        }
+    }
+
 
     private static final GeometryFactory GF = new GeometryFactory();
 

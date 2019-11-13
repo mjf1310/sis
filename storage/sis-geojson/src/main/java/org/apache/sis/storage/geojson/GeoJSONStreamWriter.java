@@ -17,9 +17,6 @@
 package org.apache.sis.storage.geojson;
 
 import com.fasterxml.jackson.core.JsonEncoding;
-import org.locationtech.jts.geom.Geometry;
-import org.apache.sis.storage.DataStoreException;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
@@ -29,10 +26,12 @@ import java.util.stream.Collectors;
 import org.apache.sis.feature.builder.FeatureTypeBuilder;
 import org.apache.sis.feature.builder.PropertyTypeBuilder;
 import org.apache.sis.internal.feature.AttributeConvention;
+import org.apache.sis.storage.DataStoreException;
 import org.apache.sis.storage.FeatureNaming;
 import org.apache.sis.storage.IllegalNameException;
-import org.apache.sis.storage.geojson.utils.GeoJSONUtils;
+import org.apache.sis.internal.geojson.GeoJSONUtils;
 import org.apache.sis.util.collection.BackingStoreException;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.Feature;
 import org.opengis.feature.FeatureType;
 import org.opengis.feature.Operation;
@@ -44,7 +43,7 @@ import org.opengis.feature.Operation;
  * @since 2.0
  * @module
  */
-public class GeoJSONStreamWriter implements Iterator<Feature>, AutoCloseable {
+public final class GeoJSONStreamWriter implements Iterator<Feature>, AutoCloseable {
 
     private final GeoJSONWriter writer;
     private final FeatureType featureType;

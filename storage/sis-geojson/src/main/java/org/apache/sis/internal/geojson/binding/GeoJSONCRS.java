@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.binding;
+package org.apache.sis.internal.geojson.binding;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -25,7 +25,7 @@ import org.apache.sis.referencing.crs.AbstractCRS;
 import org.apache.sis.referencing.cs.AxesConvention;
 import static org.apache.sis.storage.geojson.utils.GeoJSONMembres.*;
 import static org.apache.sis.storage.geojson.utils.GeoJSONTypes.*;
-import org.apache.sis.storage.geojson.utils.GeoJSONUtils;
+import org.apache.sis.internal.geojson.GeoJSONUtils;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.FactoryException;
 

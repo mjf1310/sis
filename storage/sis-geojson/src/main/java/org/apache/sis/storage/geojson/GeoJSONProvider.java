@@ -50,7 +50,7 @@ import org.opengis.parameter.ParameterValueGroup;
         capabilities = {Capability.READ, Capability.WRITE, Capability.CREATE},
         fileSuffixes = {"json", "geojson", "topojson"},
         resourceTypes = {FeatureSet.class})
-public class GeoJSONProvider extends DataStoreProvider {
+public final class GeoJSONProvider extends DataStoreProvider {
 
     public static final String NAME = "geojson";
 

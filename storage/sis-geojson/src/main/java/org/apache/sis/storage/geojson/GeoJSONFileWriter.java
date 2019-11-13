@@ -17,16 +17,13 @@
 package org.apache.sis.storage.geojson;
 
 import com.fasterxml.jackson.core.JsonEncoding;
-import java.io.Closeable;
-import org.apache.sis.storage.DataStoreException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
 import org.apache.sis.internal.feature.AttributeConvention;
+import org.apache.sis.storage.DataStoreException;
 import org.apache.sis.util.collection.BackingStoreException;
 import org.opengis.feature.Feature;
 import org.opengis.feature.FeatureType;
@@ -39,7 +36,7 @@ import org.opengis.feature.FeatureType;
  * @since   2.0
  * @module
  */
-class GeoJSONFileWriter extends GeoJSONReader {
+final class GeoJSONFileWriter extends GeoJSONReader {
 
     private final GeoJSONWriter writer;
 

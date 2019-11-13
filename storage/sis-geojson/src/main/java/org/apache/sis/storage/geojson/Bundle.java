@@ -17,11 +17,11 @@
 package org.apache.sis.storage.geojson;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
-import org.opengis.util.InternationalString;
+import java.util.ResourceBundle;
 import org.apache.sis.util.iso.ResourceInternationalString;
 import org.apache.sis.util.resources.IndexedResourceBundle;
+import org.opengis.util.InternationalString;
 
 
 /**

@@ -34,28 +34,30 @@ import java.util.stream.StreamSupport;
 import org.apache.sis.feature.builder.AttributeRole;
 import org.apache.sis.feature.builder.AttributeTypeBuilder;
 import org.apache.sis.feature.builder.FeatureTypeBuilder;
+import org.apache.sis.internal.geojson.binding.GeoJSONFeature;
+import org.apache.sis.internal.geojson.binding.GeoJSONFeatureCollection;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONGeometryCollection;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONLineString;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiLineString;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiPoint;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiPolygon;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONPoint;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONPolygon;
+import org.apache.sis.internal.geojson.binding.GeoJSONObject;
 import org.apache.sis.internal.storage.ResourceOnFileSystem;
 import org.apache.sis.metadata.iso.DefaultMetadata;
 import org.apache.sis.parameter.Parameters;
 import org.apache.sis.storage.DataStore;
 import org.apache.sis.storage.DataStoreException;
 import org.apache.sis.storage.DataStoreProvider;
-import org.apache.sis.storage.Query;
 import org.apache.sis.storage.WritableFeatureSet;
-import org.apache.sis.util.logging.Logging;
 import static org.apache.sis.storage.geojson.GeoJSONProvider.*;
-import org.apache.sis.storage.geojson.binding.*;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONGeometryCollection;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONLineString;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiLineString;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiPoint;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiPolygon;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONPoint;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONPolygon;
 import org.apache.sis.storage.geojson.utils.FeatureTypeUtils;
 import org.apache.sis.storage.geojson.utils.GeoJSONParser;
-import org.apache.sis.storage.geojson.utils.GeoJSONUtils;
+import org.apache.sis.internal.geojson.GeoJSONUtils;
 import org.apache.sis.util.iso.Names;
+import org.apache.sis.util.logging.Logging;
 import org.locationtech.jts.geom.*;
 import org.opengis.feature.Feature;
 import org.opengis.feature.FeatureType;
@@ -99,7 +101,7 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
         this(provider, toParameter(uri, coordAccuracy));
     }
 
-    public GeoJSONStore (DataStoreProvider provider, final ParameterValueGroup params) throws DataStoreException {
+    public GeoJSONStore(DataStoreProvider provider, final ParameterValueGroup params) throws DataStoreException {
         super();
         this.provider = provider;
         this.parameters = params;

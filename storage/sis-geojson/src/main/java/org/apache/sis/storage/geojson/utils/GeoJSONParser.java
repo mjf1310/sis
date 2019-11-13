@@ -16,6 +16,11 @@
  */
 package org.apache.sis.storage.geojson.utils;
 
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry;
+import org.apache.sis.internal.geojson.binding.GeoJSONCRS;
+import org.apache.sis.internal.geojson.binding.GeoJSONObject;
+import org.apache.sis.internal.geojson.binding.GeoJSONFeatureCollection;
+import org.apache.sis.internal.geojson.binding.GeoJSONFeature;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -28,14 +33,13 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.sis.util.logging.Logging;
-import org.apache.sis.storage.geojson.binding.*;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONGeometryCollection;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONLineString;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiLineString;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiPoint;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONMultiPolygon;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONPoint;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry.GeoJSONPolygon;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONGeometryCollection;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONLineString;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiLineString;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiPoint;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiPolygon;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONPoint;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONPolygon;
 import static org.apache.sis.storage.geojson.utils.GeoJSONMembres.*;
 import static org.apache.sis.storage.geojson.utils.GeoJSONTypes.*;
 

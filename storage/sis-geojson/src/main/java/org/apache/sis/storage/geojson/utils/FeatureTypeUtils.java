@@ -16,6 +16,7 @@
  */
 package org.apache.sis.storage.geojson.utils;
 
+import org.apache.sis.internal.geojson.GeoJSONUtils;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;

@@ -18,34 +18,35 @@ package org.apache.sis.storage.geojson;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
-import org.locationtech.jts.geom.Geometry;
-import org.apache.sis.referencing.CommonCRS;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry;
-import org.apache.sis.storage.geojson.utils.GeoJSONParser;
-import org.apache.sis.storage.geojson.utils.GeoJSONUtils;
-import org.apache.sis.storage.geojson.utils.GeometryUtils;
-import org.opengis.geometry.Envelope;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.nio.file.StandardOpenOption.WRITE;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.WRITE;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.apache.sis.internal.feature.AttributeConvention;
-import org.apache.sis.util.Utilities;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONGeometryCollection;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONLineString;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiLineString;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiPoint;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONMultiPolygon;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONPoint;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry.GeoJSONPolygon;
+import org.apache.sis.referencing.CommonCRS;
 import static org.apache.sis.storage.geojson.utils.GeoJSONMembres.*;
+import org.apache.sis.storage.geojson.utils.GeoJSONParser;
 import static org.apache.sis.storage.geojson.utils.GeoJSONTypes.*;
-import static org.apache.sis.storage.geojson.binding.GeoJSONGeometry.*;
+import org.apache.sis.internal.geojson.GeoJSONUtils;
+import org.apache.sis.util.Utilities;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.Attribute;
 import org.opengis.feature.AttributeType;
 import org.opengis.feature.Feature;
@@ -54,6 +55,8 @@ import org.opengis.feature.FeatureType;
 import org.opengis.feature.Operation;
 import org.opengis.feature.PropertyNotFoundException;
 import org.opengis.feature.PropertyType;
+import org.opengis.geometry.Envelope;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * @author Quentin Boileau (Geomatys)
@@ -62,7 +65,7 @@ import org.opengis.feature.PropertyType;
  * @since   2.0
  * @module
  */
-class GeoJSONWriter implements Closeable, Flushable {
+final class GeoJSONWriter implements Closeable, Flushable {
 
     private final static String SYS_LF;
     static {
@@ -341,7 +344,7 @@ class GeoJSONWriter implements Closeable, Flushable {
         assert(!isFeatureCollection && !isSingleFeature && !isSingleGeometry) :
                 "writeSingleGeometry can called only once per GeoJSONWriter.";
         isSingleGeometry = true;
-        GeoJSONGeometry jsonGeometry = GeometryUtils.toGeoJSONGeometry((Geometry) geom.getValue());
+        GeoJSONGeometry jsonGeometry = GeoJSONGeometry.toGeoJSONGeometry((Geometry) geom.getValue());
         writeGeoJSONGeometry(jsonGeometry);
     }
 
@@ -354,7 +357,7 @@ class GeoJSONWriter implements Closeable, Flushable {
         assert(!isFeatureCollection && !isSingleFeature && !isSingleGeometry) :
                 "writeSingleGeometry can called only once per GeoJSONWriter.";
         isSingleGeometry = true;
-        GeoJSONGeometry jsonGeometry = GeometryUtils.toGeoJSONGeometry(geom);
+        GeoJSONGeometry jsonGeometry = GeoJSONGeometry.toGeoJSONGeometry(geom);
         writeGeoJSONGeometry(jsonGeometry);
     }
 
@@ -364,7 +367,7 @@ class GeoJSONWriter implements Closeable, Flushable {
      * @throws IOException
      */
     private void writeFeatureGeometry(Geometry geom) throws IOException {
-        writeGeoJSONGeometry(GeometryUtils.toGeoJSONGeometry(geom));
+        writeGeoJSONGeometry(GeoJSONGeometry.toGeoJSONGeometry(geom));
     }
 
     /**

@@ -544,7 +544,7 @@ public class GeoJSONWriteTest extends TestCase {
             }
             return cp;
         }else if (candidate instanceof Map) {
-            final Map map = (Map)candidate;
+            final Map map = (Map) candidate;
             final Map cp = new HashMap(map.size());
             for(final Iterator<Map.Entry> ite=map.entrySet().iterator(); ite.hasNext();) {
                 final Map.Entry entry = ite.next();

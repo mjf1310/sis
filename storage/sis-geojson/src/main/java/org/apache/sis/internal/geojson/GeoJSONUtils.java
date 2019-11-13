@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.utils;
+package org.apache.sis.internal.geojson;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -24,7 +24,7 @@ import org.apache.sis.storage.DataStoreException;
 import org.apache.sis.io.wkt.Convention;
 import org.apache.sis.geometry.GeneralEnvelope;
 import org.apache.sis.util.ArgumentChecks;
-import org.apache.sis.storage.geojson.binding.GeoJSONObject;
+import org.apache.sis.internal.geojson.binding.GeoJSONObject;
 import org.opengis.geometry.Envelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.util.FactoryException;
@@ -60,6 +60,7 @@ import org.apache.sis.internal.storage.io.IOUtilities;
 import org.apache.sis.io.wkt.WKTFormat;
 import org.apache.sis.metadata.iso.citation.Citations;
 import org.apache.sis.referencing.IdentifiedObjects;
+import org.apache.sis.storage.geojson.utils.GeoJSONParser;
 import org.apache.sis.util.Numbers;
 import static org.apache.sis.storage.geojson.utils.GeoJSONMembres.*;
 import static org.apache.sis.storage.geojson.utils.GeoJSONTypes.*;

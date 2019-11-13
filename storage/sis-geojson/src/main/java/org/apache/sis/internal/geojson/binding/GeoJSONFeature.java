@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.binding;
+package org.apache.sis.internal.geojson.binding;
 
 import org.apache.sis.storage.geojson.utils.GeoJSONTypes;
 

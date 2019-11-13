@@ -16,19 +16,6 @@
  */
 package org.apache.sis.storage.geojson;
 
-import org.locationtech.jts.geom.Geometry;
-import org.apache.sis.util.logging.Logging;
-import org.apache.sis.storage.geojson.binding.GeoJSONFeature;
-import org.apache.sis.storage.geojson.binding.GeoJSONFeatureCollection;
-import org.apache.sis.storage.geojson.binding.GeoJSONGeometry;
-import org.apache.sis.storage.geojson.binding.GeoJSONObject;
-import org.apache.sis.storage.geojson.utils.GeoJSONParser;
-import org.apache.sis.storage.geojson.utils.GeometryUtils;
-import org.apache.sis.util.ObjectConverters;
-import org.apache.sis.util.UnconvertibleObjectException;
-import org.apache.sis.util.ObjectConverter;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.file.Path;
@@ -43,14 +30,25 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.sis.internal.feature.AttributeConvention;
-import org.apache.sis.storage.geojson.utils.GeoJSONUtils;
+import org.apache.sis.internal.geojson.binding.GeoJSONFeature;
+import org.apache.sis.internal.geojson.binding.GeoJSONFeatureCollection;
+import org.apache.sis.internal.geojson.binding.GeoJSONGeometry;
+import org.apache.sis.internal.geojson.binding.GeoJSONObject;
+import org.apache.sis.storage.geojson.utils.GeoJSONParser;
+import org.apache.sis.internal.geojson.GeoJSONUtils;
+import org.apache.sis.util.ObjectConverter;
+import org.apache.sis.util.ObjectConverters;
+import org.apache.sis.util.UnconvertibleObjectException;
 import org.apache.sis.util.collection.BackingStoreException;
+import org.apache.sis.util.logging.Logging;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.Attribute;
 import org.opengis.feature.AttributeType;
 import org.opengis.feature.Feature;
 import org.opengis.feature.FeatureAssociationRole;
 import org.opengis.feature.FeatureType;
 import org.opengis.feature.PropertyType;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * @author Quentin Boileau (Geomatys)
@@ -166,7 +164,7 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
     protected Feature toFeature(GeoJSONFeature jsonFeature) throws BackingStoreException {
 
         //Build geometry
-        final Geometry geom = GeometryUtils.toJTS(jsonFeature.getGeometry(), crs);
+        final Geometry geom = GeoJSONGeometry.toJTS(jsonFeature.getGeometry(), crs);
 
         //empty feature
         final Feature feature = featureType.newInstance();
@@ -323,7 +321,7 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
      */
     protected Feature toFeature(GeoJSONGeometry jsonGeometry) {
         final Feature feature = featureType.newInstance();
-        final Geometry geom = GeometryUtils.toJTS(jsonGeometry, crs);
+        final Geometry geom = GeoJSONGeometry.toJTS(jsonGeometry, crs);
         feature.setPropertyValue(geometryName, geom);
         return feature;
     }

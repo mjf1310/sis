@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.binding;
+package org.apache.sis.internal.geojson.binding;
 
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-
-import org.apache.sis.storage.geojson.utils.*;
-
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import org.apache.sis.storage.geojson.utils.*;
 import org.apache.sis.util.collection.BackingStoreException;
 
 /**
@@ -37,7 +37,7 @@ import org.apache.sis.util.collection.BackingStoreException;
  * @since   2.0
  * @module
  */
-public class GeoJSONFeatureCollection extends GeoJSONObject implements GeoJSONFeatureIterator<GeoJSONFeature> {
+public class GeoJSONFeatureCollection extends GeoJSONObject implements Iterator<GeoJSONFeature>, Closeable {
 
     private List<GeoJSONFeature> features = new ArrayList<>();
 

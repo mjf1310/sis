@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.binding;
+package org.apache.sis.internal.geojson.binding;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import static org.apache.sis.storage.geojson.binding.GeoJSONGeometry.*;
+import static org.apache.sis.internal.geojson.binding.GeoJSONGeometry.*;
 
 import java.io.Serializable;
 

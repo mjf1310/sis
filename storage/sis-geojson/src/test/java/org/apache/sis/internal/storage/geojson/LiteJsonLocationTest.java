@@ -31,7 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.sis.storage.geojson.utils.GeoJSONParser;
-import org.apache.sis.storage.geojson.utils.GeoJSONUtils;
+import org.apache.sis.internal.geojson.GeoJSONUtils;
 import org.apache.sis.storage.geojson.utils.LiteJsonLocation;
 import org.apache.sis.test.TestCase;
 
