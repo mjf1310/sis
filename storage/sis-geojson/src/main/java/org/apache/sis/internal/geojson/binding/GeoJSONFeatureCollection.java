@@ -16,6 +16,9 @@
  */
 package org.apache.sis.internal.geojson.binding;
 
+import org.apache.sis.internal.geojson.GeoJSONParser;
+import org.apache.sis.internal.geojson.LiteJsonLocation;
+import org.apache.sis.storage.geojson.GeoJSONConstants;
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -27,7 +30,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.sis.storage.geojson.utils.*;
 import org.apache.sis.util.collection.BackingStoreException;
 
 /**
@@ -41,23 +43,23 @@ public class GeoJSONFeatureCollection extends GeoJSONObject implements Iterator<
 
     private List<GeoJSONFeature> features = new ArrayList<>();
 
-    transient JsonLocation currentPos = null;
-    transient GeoJSONFeature current = null;
-    transient int currentIdx = 0;
+    transient JsonLocation currentPos;
+    transient GeoJSONFeature current;
+    transient int currentIdx;
     transient InputStream readStream;
     transient JsonParser parser;
 
     /**
-     * If current GeoJSONFeatureCollection is in lazy parsing mode,
-     * sourceInput should be not {@code null} and used to create {@link JsonParser object}
+     * If current GeoJSONFeatureCollection is in lazy parsing mode, sourceInput
+     * should be not {@code null} and used to create {@link JsonParser object}
      */
-    transient Path sourceInput = null;
-    transient LiteJsonLocation startPos = null;
-    transient LiteJsonLocation endPos = null;
+    transient Path sourceInput;
+    transient LiteJsonLocation startPos;
+    transient LiteJsonLocation endPos;
     transient Boolean lazyMode;
 
     public GeoJSONFeatureCollection(Boolean lazyMode) {
-        setType(GeoJSONTypes.FEATURE_COLLECTION);
+        setType(GeoJSONConstants.FEATURE_COLLECTION);
         this.lazyMode = lazyMode;
     }
 
@@ -112,12 +114,17 @@ public class GeoJSONFeatureCollection extends GeoJSONObject implements Iterator<
 
     /**
      * Find next Feature from features list or as lazy parsing.
+     *
      * @throws IOException
      */
     private void findNext() throws IOException {
-        if (current != null) return;
+        if (current != null) {
+            return;
+        }
         if (lazyMode) {
-            if (sourceInput == null || startPos == null || endPos == null) return;
+            if (sourceInput == null || startPos == null || endPos == null) {
+                return;
+            }
 
             if (parser == null) {
                 readStream = Files.newInputStream(sourceInput);

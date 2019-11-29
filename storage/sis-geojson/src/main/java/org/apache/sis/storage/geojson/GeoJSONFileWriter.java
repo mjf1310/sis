@@ -28,7 +28,6 @@ import org.apache.sis.util.collection.BackingStoreException;
 import org.opengis.feature.Feature;
 import org.opengis.feature.FeatureType;
 
-
 /**
  * @author Quentin Boileau (Geomatys)
  * @author Johann Sorel (Geomatys)
@@ -40,12 +39,12 @@ final class GeoJSONFileWriter extends GeoJSONReader {
 
     private final GeoJSONWriter writer;
 
-    private Feature edited = null;
-    private Feature lastWritten = null;
+    private Feature edited;
+    private Feature lastWritten;
     private Path tmpFile;
 
     public GeoJSONFileWriter(Path jsonFile, FeatureType featureType, ReadWriteLock rwLock,
-                             final String encoding, final int doubleAccuracy) throws DataStoreException {
+            final String encoding, final int doubleAccuracy) throws DataStoreException {
         super(jsonFile, featureType, rwLock);
 
         JsonEncoding jsonEncoding = JsonEncoding.UTF8;
@@ -90,7 +89,9 @@ final class GeoJSONFileWriter extends GeoJSONReader {
     }
 
     public void write() throws BackingStoreException {
-        if (edited == null || edited.equals(lastWritten)) return;
+        if (edited == null || edited.equals(lastWritten)) {
+            return;
+        }
 
         lastWritten = edited;
         try {
@@ -108,7 +109,7 @@ final class GeoJSONFileWriter extends GeoJSONReader {
 
     @Override
     public void close() {
-        try (final GeoJSONWriter toClose = writer) {
+        try (GeoJSONWriter toClose = writer) {
             toClose.writeEndFeatureCollection();
             toClose.flush();
         } catch (IOException ex) {

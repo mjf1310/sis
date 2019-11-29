@@ -28,11 +28,10 @@ import org.apache.sis.internal.feature.AttributeConvention;
 import org.apache.sis.referencing.CommonCRS;
 import org.apache.sis.storage.DataStoreException;
 import org.apache.sis.storage.DataStores;
-import org.apache.sis.storage.FeatureSet;
-import org.apache.sis.storage.geojson.GeoJSONStore;
 import org.apache.sis.internal.geojson.binding.GeoJSONFeatureCollection;
 import org.apache.sis.internal.geojson.binding.GeoJSONObject;
-import org.apache.sis.storage.geojson.utils.GeoJSONParser;
+import org.apache.sis.internal.geojson.GeoJSONParser;
+import org.apache.sis.storage.WritableFeatureSet;
 import org.apache.sis.test.TestCase;
 import org.apache.sis.util.iso.Names;
 import static org.junit.Assert.*;
@@ -57,7 +56,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readPointTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/point.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -73,7 +72,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readMultiPointTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/multipoint.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -89,7 +88,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readLineStringTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/linestring.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -105,7 +104,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readMultiLineStringTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/multilinestring.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -121,7 +120,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readPolygonTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/polygon.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -137,7 +136,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readMultiPolygonTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/multipolygon.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -153,7 +152,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readGeometryCollectionTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/geometrycollection.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -170,7 +169,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readFeatureTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/feature.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -186,7 +185,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readFeatureCollectionTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/featurecollection.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -206,7 +205,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readPropertyArrayTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/f_prop_array.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -243,7 +242,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readNullPropsTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/sample_with_null_properties.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();
@@ -260,7 +259,7 @@ public class GeoJSONReadTest extends TestCase {
     public void readLongTest() throws DataStoreException, URISyntaxException {
         URL file = GeoJSONReadTest.class.getResource("/org/apache/sis/internal/storage/geojson/longValue.json");
 
-        GeoJSONStore store = (GeoJSONStore) DataStores.open(file);
+        WritableFeatureSet store = (WritableFeatureSet) DataStores.open(file);
         assertNotNull(store);
 
         FeatureType ft = store.getType();

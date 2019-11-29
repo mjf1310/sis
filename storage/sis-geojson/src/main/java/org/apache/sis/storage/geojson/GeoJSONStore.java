@@ -53,8 +53,8 @@ import org.apache.sis.storage.DataStoreException;
 import org.apache.sis.storage.DataStoreProvider;
 import org.apache.sis.storage.WritableFeatureSet;
 import static org.apache.sis.storage.geojson.GeoJSONProvider.*;
-import org.apache.sis.storage.geojson.utils.FeatureTypeUtils;
-import org.apache.sis.storage.geojson.utils.GeoJSONParser;
+import org.apache.sis.internal.geojson.FeatureTypeUtils;
+import org.apache.sis.internal.geojson.GeoJSONParser;
 import org.apache.sis.internal.geojson.GeoJSONUtils;
 import org.apache.sis.util.iso.Names;
 import org.apache.sis.util.logging.Logging;
@@ -75,7 +75,7 @@ import org.opengis.util.GenericName;
  * @since   2.0
  * @module
  */
-public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, WritableFeatureSet {
+public final class GeoJSONStore extends DataStore implements ResourceOnFileSystem, WritableFeatureSet {
 
     private static final Logger LOGGER = Logging.getLogger("org.apache.sis.storage.geojson");
     private static final String DESC_FILE_SUFFIX = "_Type.json";
@@ -131,7 +131,7 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
         }
     }
 
-    private static ParameterValueGroup toParameter(final URI uri, Integer coordAccuracy){
+    private static ParameterValueGroup toParameter(final URI uri, Integer coordAccuracy) {
         final Parameters params = Parameters.castOrWrap(GeoJSONProvider.PARAMETERS_DESCRIPTOR.createValue());
         params.getOrCreate(GeoJSONProvider.PATH).setValue(uri);
         params.getOrCreate(GeoJSONProvider.COORDINATE_ACCURACY).setValue(coordAccuracy);
@@ -154,13 +154,13 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
     }
 
     @Override
-    public Optional<GenericName> getIdentifier() throws DataStoreException{
+    public Optional<GenericName> getIdentifier() throws DataStoreException {
         checkTypeExist();
         return Optional.of(name);
     }
 
     @Override
-    public FeatureType getType() throws DataStoreException{
+    public FeatureType getType() throws DataStoreException {
         checkTypeExist();
         return featureType;
     }
@@ -184,7 +184,9 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
     }
 
     /**
-     * Read FeatureType from a JSON-Schema file if exist or directly from the input JSON file.
+     * Read FeatureType from a JSON-Schema file if exist or directly from the
+     * input JSON file.
+     *
      * @return
      * @throws DataStoreException
      * @throws IOException
@@ -194,7 +196,7 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
             // build FeatureType from description JSON.
             return FeatureTypeUtils.readFeatureType(descFile);
         } else {
-            if(Files.exists(jsonFile) && Files.size(jsonFile) != 0) {
+            if (Files.exists(jsonFile) && Files.size(jsonFile) != 0) {
                 final String name = GeoJSONUtils.getNameWithoutExt(jsonFile);
 
                 final FeatureTypeBuilder ftb = new FeatureTypeBuilder();
@@ -218,7 +220,6 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
                         // TODO should we analyse all Features from FeatureCollection to be sure
                         // that each Feature properties JSON object define exactly the same properties
                         // with the same bindings ?
-
                         GeoJSONFeature jsonFeature = jsonFeatureCollection.next();
                         fillTypeFromFeature(ftb, crs, jsonFeature, false);
                     }
@@ -233,13 +234,13 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
 
                 return ftb.build();
             } else {
-                throw new DataStoreException("Can't create FeatureType from empty/not found Json file "+jsonFile.getFileName().toString());
+                throw new DataStoreException("Can't create FeatureType from empty/not found Json file " + jsonFile.getFileName().toString());
             }
         }
     }
 
     private void fillTypeFromFeature(FeatureTypeBuilder ftb, CoordinateReferenceSystem crs,
-                                     GeoJSONFeature jsonFeature, boolean analyseGeometry) {
+            GeoJSONFeature jsonFeature, boolean analyseGeometry) {
         if (analyseGeometry) {
             ftb.addAttribute(findBinding(jsonFeature.getGeometry())).setName("geometry").setCRS(crs).addRole(AttributeRole.DEFAULT_GEOMETRY);
         } else {
@@ -287,7 +288,9 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
                         jsonFile.getFileName().toString(), featureType.getName()));
             }
 
-            if (!jsonExist) Files.createFile(jsonFile);
+            if (!jsonExist) {
+                Files.createFile(jsonFile);
+            }
             //create json with empty collection
             GeoJSONUtils.writeEmptyFeatureCollection(jsonFile);
 
@@ -299,7 +302,9 @@ public class GeoJSONStore extends DataStore implements ResourceOnFileSystem, Wri
                         descFile.getFileName().toString(), featureType.getName()));
             }
 
-            if (!descExist) Files.createFile(descFile);
+            if (!descExist) {
+                Files.createFile(descFile);
+            }
             //create json schema file
             FeatureTypeUtils.writeFeatureType(featureType, descFile);
 

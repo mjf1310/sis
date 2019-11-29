@@ -14,16 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.utils;
+package org.apache.sis.internal.geojson;
 
 import com.fasterxml.jackson.core.JsonLocation;
 
 import java.util.Objects;
 
 /**
- * Lightweight pojo of {@link JsonLocation} without internal source object reference and offset.
- * Because since 2.3.x+ of jackson byteOffset and charOffset values depend of underling
- * source type. (InputStream to use byteOffset, BufferedReader to use charOffset)
+ * Lightweight pojo of {@link JsonLocation} without internal source object
+ * reference and offset. Because since 2.3.x+ of jackson byteOffset and
+ * charOffset values depend of underling source type. (InputStream to use
+ * byteOffset, BufferedReader to use charOffset)
  *
  * @author Quentin Boileau (Geomatys)
  * @author Johann Sorel (Geomatys)
@@ -50,16 +51,20 @@ public class LiteJsonLocation {
     }
 
     /**
-     * Check if an JsonLocation position (line and column) is before
-     * current LiteJsonLocation.
+     * Check if an JsonLocation position (line and column) is before current
+     * LiteJsonLocation.
+     *
      * @param o JsonLocation
-     * @return true if before and false if input JsonLocation is equals or after current LiteJsonLocation
+     * @return true if before and false if input JsonLocation is equals or after
+     * current LiteJsonLocation
      */
     public boolean isBefore(JsonLocation o) {
-        if (o == null) return false;
+        if (o == null) {
+            return false;
+        }
         LiteJsonLocation that = new LiteJsonLocation(o);
 
-        return lineNr < that.lineNr || (lineNr == that.lineNr  && columnNr < that.columnNr);
+        return lineNr < that.lineNr || (lineNr == that.lineNr && columnNr < that.columnNr);
     }
 
     /**
@@ -70,12 +75,16 @@ public class LiteJsonLocation {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
 
         // not equals if o is null or not an instance of LiteJsonLocation or JsonLocation
-        if (o == null ||
-                (!LiteJsonLocation.class.isAssignableFrom(o.getClass()) &&
-                        !JsonLocation.class.isAssignableFrom(o.getClass()))) return false;
+        if (o == null
+                || (!LiteJsonLocation.class.isAssignableFrom(o.getClass())
+                && !JsonLocation.class.isAssignableFrom(o.getClass()))) {
+            return false;
+        }
 
         LiteJsonLocation that;
         if (JsonLocation.class.isAssignableFrom(o.getClass())) {
@@ -84,8 +93,7 @@ public class LiteJsonLocation {
             that = (LiteJsonLocation) o;
         }
 
-        return lineNr == that.lineNr &&
-                columnNr == that.columnNr;
+        return lineNr == that.lineNr && columnNr == that.columnNr;
     }
 
     @Override

@@ -34,7 +34,7 @@ import org.apache.sis.internal.geojson.binding.GeoJSONFeature;
 import org.apache.sis.internal.geojson.binding.GeoJSONFeatureCollection;
 import org.apache.sis.internal.geojson.binding.GeoJSONGeometry;
 import org.apache.sis.internal.geojson.binding.GeoJSONObject;
-import org.apache.sis.storage.geojson.utils.GeoJSONParser;
+import org.apache.sis.internal.geojson.GeoJSONParser;
 import org.apache.sis.internal.geojson.GeoJSONUtils;
 import org.apache.sis.util.ObjectConverter;
 import org.apache.sis.util.ObjectConverters;
@@ -57,23 +57,24 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @since   2.0
  * @module
  */
-public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
+class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
 
-    private final static Logger LOGGER = Logging.getLogger("org.apache.sis.storage.geojson");
+    private static final Logger LOGGER = Logging.getLogger("org.apache.sis.storage.geojson");
     private final Map<Map.Entry<Class, Class>, ObjectConverter> convertersCache = new HashMap<>();
 
-    private GeoJSONObject jsonObj = null;
+    private GeoJSONObject jsonObj;
     private Boolean toRead = true;
 
     protected final ReadWriteLock rwlock;
     protected final FeatureType featureType;
     protected final Path jsonFile;
-    protected Feature current = null;
-    protected int currentFeatureIdx = 0;
+    protected Feature current;
+    protected int currentFeatureIdx;
 
     /**
      * A flag indicating if we should read identifiers from read stream. it's
-     * activated if the feature type given at built contains an {@link AttributeConvention#IDENTIFIER_PROPERTY}.
+     * activated if the feature type given at built contains an
+     * {@link AttributeConvention#IDENTIFIER_PROPERTY}.
      */
     protected final boolean hasIdentifier;
     final Function idConverter;
@@ -113,14 +114,14 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
         read();
         final Feature ob = current;
         current = null;
-        if(ob == null){
+        if (ob == null) {
             throw new BackingStoreException("No more records.");
         }
         return ob;
     }
 
     private void read() throws BackingStoreException {
-        if(current != null) return;
+        if (current != null) return;
 
         //first call
         if (toRead) {
@@ -147,16 +148,17 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
                 rwlock.readLock().unlock();
             }
         } else if (jsonObj instanceof GeoJSONFeature) {
-            current = toFeature((GeoJSONFeature)jsonObj);
+            current = toFeature((GeoJSONFeature) jsonObj);
             jsonObj = null;
         } else if (jsonObj instanceof GeoJSONGeometry) {
-            current = toFeature((GeoJSONGeometry)jsonObj);
+            current = toFeature((GeoJSONGeometry) jsonObj);
             jsonObj = null;
         }
     }
 
     /**
      * Convert a GeoJSONFeature to geotk Feature.
+     *
      * @param jsonFeature
      * @param featureId
      * @return
@@ -186,19 +188,22 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
 
     /**
      * Recursively fill a ComplexAttribute with properties map
+     *
      * @param feature
      * @param properties
      */
     private void fillFeature(Feature feature, Map<String, Object> properties) throws BackingStoreException {
         final FeatureType featureType = feature.getType();
 
-        for(final PropertyType type : featureType.getProperties(true)) {
+        for (final PropertyType type : featureType.getProperties(true)) {
 
             final String attName = type.getName().toString();
             final Object value = properties.get(attName);
-            if(value==null) continue;
+            if (value == null) {
+                continue;
+            }
 
-            if (type instanceof FeatureAssociationRole ) {
+            if (type instanceof FeatureAssociationRole) {
                 final FeatureAssociationRole asso = (FeatureAssociationRole) type;
                 final FeatureType assoType = asso.getValueType();
                 final Class<?> valueClass = value.getClass();
@@ -219,7 +224,7 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
                             fillFeature(subComplexAttribute, (Map) Array.get(value, i));
                             subs.add(subComplexAttribute);
                         }
-                        feature.setPropertyValue(attName,subs);
+                        feature.setPropertyValue(attName, subs);
                     }
                 } else if (value instanceof Map) {
                     final Feature subComplexAttribute = assoType.newInstance();
@@ -227,8 +232,8 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
                     feature.setPropertyValue(attName, subComplexAttribute);
                 }
 
-            } else if(type instanceof AttributeType) {
-                final Attribute<?> property = (Attribute<?>) feature.getProperty( type.getName().toString());
+            } else if (type instanceof AttributeType) {
+                final Attribute<?> property = (Attribute<?>) feature.getProperty(type.getName().toString());
                 fillProperty(property, value);
             }
         }
@@ -236,6 +241,7 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
 
     /**
      * Try to convert value as expected in PropertyType description.
+     *
      * @param prop
      * @param value
      */
@@ -272,6 +278,7 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
 
     /**
      * Rebuild nDim arrays recursively
+     *
      * @param candidate
      * @param componentType
      * @param depth
@@ -279,25 +286,28 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
      * @throws UnconvertibleObjectException
      */
     private Object rebuildArray(Object candidate, Class componentType, int depth) throws UnconvertibleObjectException {
-        if(candidate==null) return null;
+        if (candidate == null) {
+            return null;
+        }
 
-        if(candidate.getClass().isArray()){
+        if (candidate.getClass().isArray()) {
             final int size = Array.getLength(candidate);
             final int[] dims = new int[depth];
             dims[0] = size;
             final Object rarray = Array.newInstance(componentType, dims);
             depth--;
-            for(int k=0; k<size; k++){
+            for (int k = 0; k < size; k++) {
                 Array.set(rarray, k, rebuildArray(Array.get(candidate, k), componentType, depth));
             }
             return rarray;
-        }else{
+        } else {
             return convert(candidate, componentType);
         }
     }
 
     /**
      * Convert value object into binding class
+     *
      * @param value
      * @param binding
      * @return
@@ -316,6 +326,7 @@ public class GeoJSONReader implements Iterator<Feature>, AutoCloseable {
 
     /**
      * Convert a GeoJSONGeometry to Feature.
+     *
      * @param jsonGeometry
      * @return
      */

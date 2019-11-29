@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.sis.storage.geojson.utils;
+package org.apache.sis.internal.geojson;
 
-import org.apache.sis.internal.geojson.GeoJSONUtils;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -33,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
 import org.apache.sis.feature.builder.AttributeRole;
 import org.apache.sis.feature.builder.AttributeTypeBuilder;
 import org.apache.sis.feature.builder.FeatureTypeBuilder;
@@ -43,7 +41,6 @@ import org.apache.sis.util.ArgumentChecks;
 import org.apache.sis.util.Static;
 import org.apache.sis.util.iso.Names;
 import org.apache.sis.util.iso.SimpleInternationalString;
-import org.apache.sis.util.logging.Logging;
 import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.AttributeType;
 import org.opengis.feature.FeatureAssociationRole;
@@ -74,9 +71,6 @@ import org.opengis.util.NameFactory;
  */
 public final class FeatureTypeUtils extends Static {
 
-    private static final Logger LOGGER = Logging.getLogger("org.apache.sis.storage.geojson.utils");
-//    private static final FilterFactory2 FF = (FilterFactory2) DefaultFactories.forBuildin(FilterFactory.class);
-
     private static final String TITLE = "title";
     private static final String TYPE = "type";
     private static final String JAVA_TYPE = "javatype";
@@ -101,6 +95,7 @@ public final class FeatureTypeUtils extends Static {
 
     /**
      * Write a FeatureType in output File.
+     *
      * @param ft
      * @param output
      * @throws IOException
@@ -114,7 +109,7 @@ public final class FeatureTypeUtils extends Static {
                 .orElseThrow(() -> new DataStoreException("No default Geometry in given FeatureType : " + ft));
 
         try (OutputStream outStream = Files.newOutputStream(output, CREATE, WRITE, TRUNCATE_EXISTING);
-             JsonGenerator writer = GeoJSONParser.FACTORY.createGenerator(outStream, JsonEncoding.UTF8)) {
+                JsonGenerator writer = GeoJSONParser.FACTORY.createGenerator(outStream, JsonEncoding.UTF8)) {
 
             writer.useDefaultPrettyPrinter();
             //start write feature collection.
@@ -138,7 +133,9 @@ public final class FeatureTypeUtils extends Static {
         ArgumentChecks.ensureNonNull("FeatureType", fts);
         ArgumentChecks.ensureNonNull("outputStream", output);
 
-        if (fts.isEmpty()) return;
+        if (fts.isEmpty()) {
+            return;
+        }
 
         if (fts.size() > 1) {
             JsonGenerator writer = GeoJSONParser.FACTORY.createGenerator(output, JsonEncoding.UTF8).useDefaultPrettyPrinter();
@@ -153,26 +150,27 @@ public final class FeatureTypeUtils extends Static {
             writeFeatureType(fts.get(0), output);
         }
     }
+
     /**
      * Write a FeatureType in output File.
+     *
      * @param ft
      * @param output
      * @throws IOException
      */
     public static void writeFeatureType(FeatureType ft, OutputStream output) throws IOException, DataStoreException {
-        JsonGenerator writer = GeoJSONParser.FACTORY.createGenerator(output,JsonEncoding.UTF8).useDefaultPrettyPrinter();
+        JsonGenerator writer = GeoJSONParser.FACTORY.createGenerator(output, JsonEncoding.UTF8).useDefaultPrettyPrinter();
         writeFeatureType(ft, output, writer);
         writer.flush();
         writer.close();
     }
-
 
     private static void writeFeatureType(FeatureType ft, OutputStream output, JsonGenerator writer) throws IOException, DataStoreException {
         ArgumentChecks.ensureNonNull("FeatureType", ft);
         ArgumentChecks.ensureNonNull("outputStream", output);
 
         if (GeoJSONUtils.getDefaultGeometry(ft) == null) {
-            throw new DataStoreException("No default Geometry in given FeatureType : "+ft);
+            throw new DataStoreException("No default Geometry in given FeatureType : " + ft);
         }
 
         //start write feature collection.
@@ -206,13 +204,13 @@ public final class FeatureTypeUtils extends Static {
             boolean isRequired = false;
 
             if (type instanceof FeatureAssociationRole) {
-                isRequired = writeComplexType((FeatureAssociationRole) type, ((FeatureAssociationRole)type).getValueType(), writer);
+                isRequired = writeComplexType((FeatureAssociationRole) type, ((FeatureAssociationRole) type).getValueType(), writer);
             } else if (type instanceof AttributeType) {
-                if(Geometry.class.isAssignableFrom( ((AttributeType) type).getValueClass())){
+                if (Geometry.class.isAssignableFrom(((AttributeType) type).getValueClass())) {
 //                    GeometryType geometryType = (GeometryType) type;
 //                    isRequired = writeGeometryType(descriptor, geometryType, writer);
                 } else {
-                    isRequired = writeAttributeType(ft, (AttributeType)type, writer);
+                    isRequired = writeAttributeType(ft, (AttributeType) type, writer);
                 }
             }
             if (isRequired) {
@@ -259,7 +257,7 @@ public final class FeatureTypeUtils extends Static {
         if (att.getDescription() != null) {
             writer.writeStringField(DESCRIPTION, att.getDescription().toString());
         }
-        if (GeoJSONUtils.isPartOfPrimaryKey(featureType,att.getName().toString())) {
+        if (GeoJSONUtils.isPartOfPrimaryKey(featureType, att.getName().toString())) {
             writer.writeBooleanField(PRIMARY_KEY, true);
         }
         writer.writeNumberField(MIN_ITEMS, att.getMinimumOccurs());
@@ -280,11 +278,11 @@ public final class FeatureTypeUtils extends Static {
             return INTEGER;
         } else if (Number.class.isAssignableFrom(binding)) {
             return NUMBER;
-        } else if(Boolean.class.isAssignableFrom(binding)) {
+        } else if (Boolean.class.isAssignableFrom(binding)) {
             return BOOLEAN;
         } else if (binding.isArray()) {
             return ARRAY;
-        } else  {
+        } else {
             //fallback
             return STRING;
         }
@@ -312,6 +310,7 @@ public final class FeatureTypeUtils extends Static {
 
     /**
      * Read a FeatureType from an input File.
+     *
      * @param input file to read
      * @return FeatureType
      * @throws IOException
@@ -319,7 +318,7 @@ public final class FeatureTypeUtils extends Static {
     public static FeatureType readFeatureType(Path input) throws IOException, DataStoreException {
 
         try (InputStream stream = Files.newInputStream(input);
-             JsonParser parser = GeoJSONParser.FACTORY.createParser(stream)) {
+                JsonParser parser = GeoJSONParser.FACTORY.createParser(stream)) {
 
             final FeatureTypeBuilder ftb = new FeatureTypeBuilder();
             parser.nextToken();
@@ -349,10 +348,10 @@ public final class FeatureTypeUtils extends Static {
                 }
             }
 
-            try{
+            try {
                 return ftb.build();
-            }catch(IllegalStateException ex){
-                throw new DataStoreException("FeatureType name or default geometry not found in JSON schema\n"+ex.getMessage(),ex);
+            } catch (IllegalStateException ex) {
+                throw new DataStoreException("FeatureType name or default geometry not found in JSON schema\n" + ex.getMessage(), ex);
             }
         }
     }
@@ -491,7 +490,7 @@ public final class FeatureTypeUtils extends Static {
         if (subftb == null) {
             //build AttributeDescriptor
             if (binding == null) {
-                throw new DataStoreException("Empty javatype for attribute "+attributeName);
+                throw new DataStoreException("Empty javatype for attribute " + attributeName);
             }
 
             AttributeTypeBuilder<?> atb = ftb.addAttribute(binding)
@@ -541,29 +540,28 @@ public final class FeatureTypeUtils extends Static {
         return requiredList;
     }
 
-
     /**
      * Parse a string value that can be expressed in 2 different forms :
      * JSR-283 extended form : {uri}localpart
      * Separator form : uri:localpart
      *
-     * if the given string do not match any, then a Name with no namespace will be
-     * created and the localpart will be the given string.
+     * if the given string do not match any, then a Name with no namespace will
+     * be created and the localpart will be the given string.
      */
-    public static GenericName nameValueOf(final String candidate){
+    public static GenericName nameValueOf(final String candidate) {
 
-        if(candidate.startsWith("{")){
+        if (candidate.startsWith("{")) {
             //name is in extended form
             return toSessionNamespaceFromExtended(candidate);
         }
 
         int index = candidate.lastIndexOf(':');
 
-        if(index <= 0){
+        if (index <= 0) {
             return createName(null, candidate);
-        }else{
-            final String uri = candidate.substring(0,index);
-            final String name = candidate.substring(index+1,candidate.length());
+        } else {
+            final String uri = candidate.substring(0, index);
+            final String name = candidate.substring(index + 1, candidate.length());
             return createName(uri, name);
         }
 
@@ -572,10 +570,12 @@ public final class FeatureTypeUtils extends Static {
     private static GenericName toSessionNamespaceFromExtended(final String candidate) {
         final int index = candidate.indexOf('}');
 
-        if(index == -1) throw new IllegalArgumentException("Invalide extended form : "+ candidate);
+        if (index == -1) {
+            throw new IllegalArgumentException("Invalide extended form : " + candidate);
+        }
 
         final String uri = candidate.substring(1, index);
-        final String name = candidate.substring(index+1, candidate.length());
+        final String name = candidate.substring(index + 1, candidate.length());
 
         return createName(uri, name);
     }
@@ -588,9 +588,9 @@ public final class FeatureTypeUtils extends Static {
     public static GenericName createName(final String namespace, final String local) {
 
         // WARNING: DefaultFactories.NAMES is not a public API and may change in any future SIS version.
-        if(namespace==null || namespace.isEmpty()){
+        if (namespace == null || namespace.isEmpty()) {
             return DefaultFactories.forBuildin(NameFactory.class).createGenericName(null, local);
-        }else{
+        } else {
             return DefaultFactories.forBuildin(NameFactory.class).createGenericName(null, namespace, local);
         }
     }

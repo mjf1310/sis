@@ -120,6 +120,12 @@
       <version>2.10.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.sis.core</groupId>
+      <artifactId>sis-feature</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+    </dependency>
   </dependencies>
 
   <repositories>

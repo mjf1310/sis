@@ -30,23 +30,23 @@ import java.io.Serializable;
  * @since   2.0
  * @module
  */
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include=JsonTypeInfo.As.PROPERTY, property="type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value=GeoJSONFeatureCollection.class,    name="FeatureCollection"),
-        @JsonSubTypes.Type(value=GeoJSONFeature.class,              name="Feature"),
-        @JsonSubTypes.Type(value=GeoJSONPoint.class,                name="Point"),
-        @JsonSubTypes.Type(value=GeoJSONLineString.class,           name="LineString"),
-        @JsonSubTypes.Type(value=GeoJSONPolygon.class,              name="Polygon"),
-        @JsonSubTypes.Type(value=GeoJSONMultiPoint.class,           name="MultiPoint"),
-        @JsonSubTypes.Type(value=GeoJSONMultiLineString.class,      name="MultiLineString"),
-        @JsonSubTypes.Type(value=GeoJSONMultiPolygon.class,         name="MultiPolygon"),
-        @JsonSubTypes.Type(value=GeoJSONGeometryCollection.class,   name="GeometryCollection")
+    @JsonSubTypes.Type(value = GeoJSONFeatureCollection.class, name = "FeatureCollection"),
+    @JsonSubTypes.Type(value = GeoJSONFeature.class, name = "Feature"),
+    @JsonSubTypes.Type(value = GeoJSONPoint.class, name = "Point"),
+    @JsonSubTypes.Type(value = GeoJSONLineString.class, name = "LineString"),
+    @JsonSubTypes.Type(value = GeoJSONPolygon.class, name = "Polygon"),
+    @JsonSubTypes.Type(value = GeoJSONMultiPoint.class, name = "MultiPoint"),
+    @JsonSubTypes.Type(value = GeoJSONMultiLineString.class, name = "MultiLineString"),
+    @JsonSubTypes.Type(value = GeoJSONMultiPolygon.class, name = "MultiPolygon"),
+    @JsonSubTypes.Type(value = GeoJSONGeometryCollection.class, name = "GeometryCollection")
 })
 public class GeoJSONObject implements Serializable {
 
     private String type;
-    private double[] bbox = null;
-    private GeoJSONCRS crs = null;
+    private double[] bbox;
+    private GeoJSONCRS crs;
 
     public GeoJSONObject() {
     }

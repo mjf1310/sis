@@ -16,7 +16,7 @@
  */
 package org.apache.sis.internal.geojson.binding;
 
-import org.apache.sis.storage.geojson.utils.GeoJSONTypes;
+import org.apache.sis.storage.geojson.GeoJSONConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,16 +30,16 @@ import java.util.Map;
  */
 public class GeoJSONFeature extends GeoJSONObject {
 
-    private GeoJSONGeometry geometry = null;
+    private GeoJSONGeometry geometry;
     /**
      * Identifier (id attribute) of the feature. According to RFC 7946, it is
      * optional and can either be a number or a string.
      */
-    private Object id = null;
+    private Object id;
     private Map<String, Object> properties = new HashMap<>();
 
     public GeoJSONFeature() {
-        setType(GeoJSONTypes.FEATURE);
+        setType(GeoJSONConstants.FEATURE);
     }
 
     public GeoJSONGeometry getGeometry() {

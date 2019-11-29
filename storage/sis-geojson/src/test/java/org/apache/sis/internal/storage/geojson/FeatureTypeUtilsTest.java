@@ -32,7 +32,7 @@ import java.util.Set;
 import org.apache.sis.feature.builder.AttributeRole;
 import org.apache.sis.feature.builder.FeatureTypeBuilder;
 import org.apache.sis.internal.feature.AttributeConvention;
-import org.apache.sis.storage.geojson.utils.FeatureTypeUtils;
+import org.apache.sis.internal.geojson.FeatureTypeUtils;
 import org.apache.sis.internal.geojson.GeoJSONUtils;
 import org.apache.sis.test.TestCase;
 

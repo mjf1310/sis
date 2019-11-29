@@ -60,10 +60,8 @@ import org.apache.sis.internal.storage.io.IOUtilities;
 import org.apache.sis.io.wkt.WKTFormat;
 import org.apache.sis.metadata.iso.citation.Citations;
 import org.apache.sis.referencing.IdentifiedObjects;
-import org.apache.sis.storage.geojson.utils.GeoJSONParser;
 import org.apache.sis.util.Numbers;
-import static org.apache.sis.storage.geojson.utils.GeoJSONMembres.*;
-import static org.apache.sis.storage.geojson.utils.GeoJSONTypes.*;
+import static org.apache.sis.storage.geojson.GeoJSONConstants.*;
 import org.apache.sis.util.Static;
 import org.opengis.feature.AttributeType;
 import org.opengis.feature.Feature;
@@ -109,7 +107,7 @@ public final class GeoJSONUtils extends Static {
     public static CoordinateReferenceSystem getCRS(FeatureType type){
         try {
             return getCRS(getDefaultGeometry(type));
-        } catch (IllegalArgumentException|IllegalStateException ex) {
+        } catch (IllegalArgumentException | IllegalStateException ex) {
             //no default geometry property
             return null;
         }
@@ -135,14 +133,14 @@ public final class GeoJSONUtils extends Static {
      * @return characteristic value or default value is not found
      */
     public static <T> T getCharacteristicValue(PropertyType type, String charName, T defaulValue){
-        while(type instanceof Operation){
-            type = (PropertyType) ((Operation)type).getResult();
+        while (type instanceof Operation) {
+            type = (PropertyType) ((Operation) type).getResult();
         }
-        if(type instanceof AttributeType){
-            final AttributeType at = (AttributeType) ((AttributeType)type).characteristics().get(charName);
-            if(at!=null){
+        if (type instanceof AttributeType) {
+            final AttributeType at = (AttributeType) ((AttributeType) type).characteristics().get(charName);
+            if (at != null) {
                 T val = (T) at.getDefaultValue();
-                return val==null ? defaulValue : val;
+                return (val == null) ? defaulValue : val;
             }
         }
         return defaulValue;
@@ -220,9 +218,9 @@ public final class GeoJSONUtils extends Static {
      */
     public static Optional<Object> getDefaultGeometryValue(Feature input) throws PropertyNotFoundException, IllegalStateException {
         Object geometry;
-        try{
+        try {
             geometry = input.getPropertyValue(AttributeConvention.GEOMETRY_PROPERTY.toString());
-        } catch(PropertyNotFoundException ex) {
+        } catch (PropertyNotFoundException ex) {
             try {
                 final PropertyType geomType = getDefaultGeometry(input.getType());
                 geometry = input.getPropertyValue(geomType.getName().toString());
@@ -243,7 +241,7 @@ public final class GeoJSONUtils extends Static {
      */
     public static CoordinateReferenceSystem parseCRS(String href, String crsType) {
         String wkt = null;
-        try(InputStream stream = new URL(href).openStream()) {
+        try (InputStream stream = new URL(href).openStream()) {
             wkt = IOUtilities.toString(stream);
         } catch (IOException e) {
             GeoJSONParser.LOGGER.log(Level.WARNING, "Can't access to linked CRS "+href, e);
@@ -281,11 +279,11 @@ public final class GeoJSONUtils extends Static {
         // In case an operation also implements attribute type, we check it first.
         // TODO : cycle detection ?
         while (!(input instanceof AttributeType) && input instanceof Operation) {
-            input = ((Operation)input).getResult();
+            input = ((Operation) input).getResult();
         }
 
         if (input instanceof AttributeType) {
-            return Optional.of((AttributeType)input);
+            return Optional.of((AttributeType) input);
         }
 
         return Optional.empty();
@@ -296,14 +294,14 @@ public final class GeoJSONUtils extends Static {
      */
     public static boolean isPartOfPrimaryKey(FeatureType type, String propertyName) {
         PropertyType property;
-        try{
+        try {
             property = type.getProperty(AttributeConvention.IDENTIFIER_PROPERTY.toString());
-        } catch(PropertyNotFoundException ex) {
+        } catch (PropertyNotFoundException ex) {
             //no identifier property
             return false;
         }
-        if(property instanceof AbstractOperation){
-            final Set<String> dependencies = ((AbstractOperation)property).getDependencies();
+        if (property instanceof AbstractOperation) {
+            final Set<String> dependencies = ((AbstractOperation) property).getDependencies();
             return dependencies.contains(propertyName);
         }
         return false;
@@ -444,7 +442,7 @@ public final class GeoJSONUtils extends Static {
 
         if (binding.isArray()) {
             if (byte.class.isAssignableFrom(binding.getComponentType())) {
-                writer.writeBinary((byte[])value);
+                writer.writeBinary((byte[]) value);
             } else {
                 writer.writeStartArray();
                 final int size = Array.getLength(value);

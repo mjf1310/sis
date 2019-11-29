@@ -30,9 +30,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.apache.sis.storage.geojson.utils.GeoJSONParser;
+import org.apache.sis.internal.geojson.GeoJSONParser;
 import org.apache.sis.internal.geojson.GeoJSONUtils;
-import org.apache.sis.storage.geojson.utils.LiteJsonLocation;
+import org.apache.sis.internal.geojson.LiteJsonLocation;
 import org.apache.sis.test.TestCase;
 
 /**

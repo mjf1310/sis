@@ -53,14 +53,8 @@ public final class Bundle extends IndexedResourceBundle {
          */
         public static final short datastoreDescription = 3;
 
-        /**
-         * multiple GeoJSON data files (.json)
-         */
         public static final short datastoreFolderDescription = 4;
 
-        /**
-         * GeoJSON (folder)
-         */
         public static final short datastoreFolderTitle = 5;
 
         /**

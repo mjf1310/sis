@@ -16,6 +16,7 @@
  */
 package org.apache.sis.internal.storage.geojson;
 
+import org.apache.sis.feature.FeatureComparator;
 import com.fasterxml.jackson.core.JsonEncoding;
 import java.io.*;
 import java.lang.reflect.Array;
@@ -31,10 +32,11 @@ import org.apache.sis.feature.builder.FeatureTypeBuilder;
 import org.apache.sis.internal.feature.AttributeConvention;
 import org.apache.sis.referencing.CommonCRS;
 import org.apache.sis.storage.DataStoreException;
+import org.apache.sis.storage.WritableFeatureSet;
 import org.apache.sis.storage.geojson.GeoJSONProvider;
+import org.apache.sis.storage.geojson.GeoJSONStore;
 import org.apache.sis.storage.geojson.GeoJSONStreamWriter;
 import org.apache.sis.util.iso.SimpleInternationalString;
-import org.apache.sis.storage.geojson.GeoJSONStore;
 import org.apache.sis.test.TestCase;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -70,7 +72,7 @@ public class GeoJSONWriteTest extends TestCase {
 
         final Path file = Files.createTempFile("point", ".json");
 
-        final GeoJSONStore store = new GeoJSONStore(new GeoJSONProvider(), file, 7);
+        final WritableFeatureSet store = new GeoJSONStore(new GeoJSONProvider(), file, 7);
         assertNotNull(store);
         final String typeName = file.getFileName().toString().replace(".json", "");
 
@@ -116,7 +118,7 @@ public class GeoJSONWriteTest extends TestCase {
 
         Path file = Files.createTempFile("geoms", ".json");
 
-        GeoJSONStore store = new GeoJSONStore(new GeoJSONProvider(), file, 7);
+        WritableFeatureSet store = new GeoJSONStore(new GeoJSONProvider(), file, 7);
         assertNotNull(store);
 
         String typeName = file.getFileName().toString().replace(".json", "");
@@ -205,7 +207,7 @@ public class GeoJSONWriteTest extends TestCase {
     public void writeComplexFeaturesTest() throws Exception {
         Path file = Files.createTempFile("complex", ".json");
 
-        GeoJSONStore store = new GeoJSONStore(new GeoJSONProvider(), file, 7);
+        WritableFeatureSet store = new GeoJSONStore(new GeoJSONProvider(), file, 7);
         assertNotNull(store);
 
         String typeName = file.getFileName().toString().replace(".json", "");
@@ -268,7 +270,9 @@ public class GeoJSONWriteTest extends TestCase {
             Iterator<Feature> ite = stream.iterator();
             while (ite.hasNext()) {
                 Feature candidate = ite.next();
-                assertEquals(expected, candidate);
+                FeatureComparator comparator = new FeatureComparator(expected, candidate);
+                comparator.ignoredProperties.add(AttributeConvention.IDENTIFIER);
+                comparator.compare();
             }
         }
         Files.deleteIfExists(file);

@@ -79,7 +79,6 @@ public final class GeoJSONProvider extends DataStoreProvider {
             .setRequired(false)
             .create(Integer.class, 7);
 
-
     public static final ParameterDescriptorGroup PARAMETERS_DESCRIPTOR =
             new ParameterBuilder()
                     .addName(NAME)
@@ -148,8 +147,9 @@ public final class GeoJSONProvider extends DataStoreProvider {
     }
 
     /**
-     * Returns the next character which is not a white space, or -1 if the end of stream is reached.
-     * Exactly one of {@code buffer} and {@code reader} shall be non-null.
+     * Returns the next character which is not a white space, or -1 if the end
+     * of stream is reached. Exactly one of {@code buffer} and {@code reader}
+     * shall be non-null.
      */
     private static int nextAfterSpaces(final ByteBuffer buffer, final Reader reader) throws IOException {
         if (buffer != null) {
@@ -163,7 +163,9 @@ public final class GeoJSONProvider extends DataStoreProvider {
         }
         int c;
         while ((c = IOUtilities.readCodePoint(reader)) >= 0) {
-            if (!Character.isWhitespace(c)) break;
+            if (!Character.isWhitespace(c)) {
+                break;
+            }
         }
         return c;
     }

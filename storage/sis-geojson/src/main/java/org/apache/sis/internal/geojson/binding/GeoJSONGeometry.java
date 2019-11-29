@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.apache.sis.storage.geojson.utils.GeoJSONTypes;
+import org.apache.sis.storage.geojson.GeoJSONConstants;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
@@ -54,10 +54,10 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
      */
     public static class GeoJSONPoint extends GeoJSONGeometry {
 
-        private double[] coordinates = null;
+        private double[] coordinates;
 
         public GeoJSONPoint() {
-            setType(GeoJSONTypes.POINT);
+            setType(GeoJSONConstants.POINT);
         }
 
         public double[] getCoordinates() {
@@ -75,10 +75,10 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
      */
     public static class GeoJSONMultiPoint extends GeoJSONGeometry {
 
-        private double[][] coordinates = null;
+        private double[][] coordinates;
 
         public GeoJSONMultiPoint() {
-            setType(GeoJSONTypes.MULTI_POINT);
+            setType(GeoJSONConstants.MULTI_POINT);
         }
 
         public double[][] getCoordinates() {
@@ -95,10 +95,10 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
      */
     public static class GeoJSONLineString extends GeoJSONGeometry {
 
-        private double[][] coordinates = null;
+        private double[][] coordinates;
 
         public GeoJSONLineString() {
-            setType(GeoJSONTypes.LINESTRING);
+            setType(GeoJSONConstants.LINESTRING);
         }
 
         public double[][] getCoordinates() {
@@ -115,10 +115,10 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
      */
     public static class GeoJSONMultiLineString extends GeoJSONGeometry {
 
-        private double[][][] coordinates = null;
+        private double[][][] coordinates;
 
         public GeoJSONMultiLineString() {
-            setType(GeoJSONTypes.MULTI_LINESTRING);
+            setType(GeoJSONConstants.MULTI_LINESTRING);
         }
 
         public double[][][] getCoordinates() {
@@ -135,10 +135,10 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
      */
     public static class GeoJSONPolygon extends GeoJSONGeometry {
 
-        private double[][][] coordinates = null;
+        private double[][][] coordinates;
 
         public GeoJSONPolygon() {
-            setType(GeoJSONTypes.POLYGON);
+            setType(GeoJSONConstants.POLYGON);
         }
 
         public double[][][] getCoordinates() {
@@ -153,12 +153,12 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
     /**
      * MULTI-POLYGON
      */
-    public static  class GeoJSONMultiPolygon extends GeoJSONGeometry {
+    public static class GeoJSONMultiPolygon extends GeoJSONGeometry {
 
-        private double[][][][] coordinates = null;
+        private double[][][][] coordinates;
 
         public GeoJSONMultiPolygon() {
-            setType(GeoJSONTypes.MULTI_POLYGON);
+            setType(GeoJSONConstants.MULTI_POLYGON);
         }
 
         public double[][][][] getCoordinates() {
@@ -178,7 +178,7 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
         protected List<GeoJSONGeometry> geometries = new ArrayList<GeoJSONGeometry>();
 
         public GeoJSONGeometryCollection() {
-            setType(GeoJSONTypes.GEOMETRY_COLLECTION);
+            setType(GeoJSONConstants.GEOMETRY_COLLECTION);
         }
 
         public List<GeoJSONGeometry> getGeometries() {
@@ -190,11 +190,11 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
         }
     }
 
-
     private static final GeometryFactory GF = new GeometryFactory();
 
     /**
      * Convert GeoJSONGeometry into JTS Geometry with included CRS
+     *
      * @param jsonGeometry
      * @param crs
      * @return JTS Geometry
@@ -255,10 +255,10 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
     private static Polygon toPolygon(double[][][] coords, CoordinateReferenceSystem crs) {
 
         LinearRing exterior = toLinearRing(coords[0]);
-        LinearRing[] holes = new LinearRing[coords.length-1];
+        LinearRing[] holes = new LinearRing[coords.length - 1];
         if (coords.length > 1) {
             for (int i = 0; i < holes.length; i++) {
-                holes[i] = toLinearRing(coords[i+1]);
+                holes[i] = toLinearRing(coords[i + 1]);
             }
         }
 
@@ -355,9 +355,9 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
         return null;
     }
 
-
     /**
      * Convert JTS geometry into a GeoJSONGeometry.
+     *
      * @param geom JTS Geometry
      * @return GeoJSONGeometry
      */
@@ -392,9 +392,9 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
         double z = coord.getZ();
 
         if (Double.isNaN(z)) {
-            return new double[] {x, y};
+            return new double[]{x, y};
         } else {
-            return new double[] {x, y, z};
+            return new double[]{x, y, z};
         }
     }
 
@@ -455,7 +455,7 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
 
         if (totalRings > 1) {
             for (int i = 0; i < totalRings - 1; i++) {
-                coords[i+1] = polygon.getInteriorRingN(i).getCoordinateSequence();
+                coords[i + 1] = polygon.getInteriorRingN(i).getCoordinateSequence();
             }
         }
         return coords;
@@ -472,7 +472,7 @@ public class GeoJSONGeometry extends GeoJSONObject implements Serializable {
         int totalRings = mln.getNumGeometries();
         CoordinateSequence[] coords = new CoordinateSequence[totalRings];
         for (int i = 0; i < totalRings; i++) {
-            coords[i] = ((LineString)mln.getGeometryN(i)).getCoordinateSequence();
+            coords[i] = ((LineString) mln.getGeometryN(i)).getCoordinateSequence();
         }
         jsonMln.setCoordinates(toArray(coords));
         return jsonMln;

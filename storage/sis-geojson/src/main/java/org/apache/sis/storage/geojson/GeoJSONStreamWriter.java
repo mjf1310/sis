@@ -40,7 +40,7 @@ import org.opengis.feature.Operation;
  * @author Quentin Boileau (Geomatys)
  * @author Johann Sorel (Geomatys)
  * @version 2.0
- * @since 2.0
+ * @since   2.0
  * @module
  */
 public final class GeoJSONStreamWriter implements Iterator<Feature>, AutoCloseable {
@@ -48,9 +48,9 @@ public final class GeoJSONStreamWriter implements Iterator<Feature>, AutoCloseab
     private final GeoJSONWriter writer;
     private final FeatureType featureType;
 
-    private Feature edited = null;
-    private Feature lastWritten = null;
-    private int currentFeatureIdx = 0;
+    private Feature edited;
+    private Feature lastWritten;
+    private int currentFeatureIdx;
 
     private final boolean hasIdentifier;
 
@@ -148,7 +148,7 @@ public final class GeoJSONStreamWriter implements Iterator<Feature>, AutoCloseab
     public static void writeSingleFeature(OutputStream outputStream, Feature feature, final JsonEncoding encoding,
             final int doubleAccuracy, boolean prettyPrint) throws IOException {
 
-        try (final GeoJSONWriter writer = new GeoJSONWriter(outputStream, encoding, doubleAccuracy, prettyPrint)) {
+        try (GeoJSONWriter writer = new GeoJSONWriter(outputStream, encoding, doubleAccuracy, prettyPrint)) {
             writer.writeSingleFeature(feature);
         }
     }
@@ -165,7 +165,7 @@ public final class GeoJSONStreamWriter implements Iterator<Feature>, AutoCloseab
     public static void writeSingleGeometry(OutputStream outputStream, Geometry geometry, final JsonEncoding encoding,
             final int doubleAccuracy, boolean prettyPrint) throws IOException {
 
-        try (final GeoJSONWriter writer = new GeoJSONWriter(outputStream, encoding, doubleAccuracy, prettyPrint)) {
+        try (GeoJSONWriter writer = new GeoJSONWriter(outputStream, encoding, doubleAccuracy, prettyPrint)) {
             writer.writeSingleGeometry(geometry);
         }
     }
